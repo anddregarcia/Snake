@@ -2,7 +2,7 @@
  * Snake.cpp
  *
  *  Created on: 10/04/2013
- *      Author: André
+ *      Author: André Garcia
  */
 
 #include "..\Headers\Snake.h"

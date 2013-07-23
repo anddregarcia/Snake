@@ -2,7 +2,7 @@
  * SnakeBody.h
  *
  *  Created on: 03/04/2013
- *      Author: André
+ *      Author: André Garcia
  */
 
 #ifndef SnakeBody_H_

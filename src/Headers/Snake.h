@@ -2,7 +2,7 @@
  * Snake.h
  *
  *  Created on: 10/04/2013
- *      Author: André
+ *      Author: André Garcia
  */
 
 

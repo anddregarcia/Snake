@@ -2,7 +2,7 @@
  * Food.cpp
  *
  *  Created on: 04/04/2013
- *      Author: André
+ *      Author: André Garcia
  */
 
 #include "..\Headers\Food.h"

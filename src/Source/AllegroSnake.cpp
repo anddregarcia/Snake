@@ -1,3 +1,11 @@
+/*
+ * SnakeBody.cpp
+ *
+ *  Created on: 03/04/2013
+ *      Author: André Garcia
+ */
+
+
 #include <iostream>
 #include <signal.h>
 #include <cstdlib>
@@ -41,13 +49,10 @@ int AllegroSnake(void)
 
 	int newXPosition;
 	int newYPosition;
-
-	long index = 0, fullSize = 0;
 	char cDirection;
 
-
 	Snake snake;
-	SnakeBody snakeBody( pos_x, pos_y, pos_x + 30, pos_y + 30, 30, 'R' );
+	SnakeBody snakeBody ( pos_x, pos_y, pos_x + 30, pos_y + 30, 30, 'R' );
 	snake.vSnake.push_back(snakeBody);
 
 	Food food( 30, 30, 45, 45, 15 );
@@ -65,7 +70,7 @@ int AllegroSnake(void)
 	al_init_primitives_addon();
 	al_install_keyboard();
 
-	ALLEGRO_FONT *text = al_load_font("Resources//fonts//cactus.ttf", 24, 0);
+	ALLEGRO_FONT *text = al_load_font("Resources//fonts//arial.ttf", 24, 0);
 
 	display = al_create_display(width, height);
 
@@ -79,9 +84,9 @@ int AllegroSnake(void)
 
 	//================ Timer ================
 	ALLEGRO_TIMER *timer = NULL;
-	al_rest(5.0); //Timer de n segundos
+	al_rest(1.0); //Timer of n seconds
 	int FPS = 60;
-	timer = al_create_timer(10.0 / FPS);
+	timer = al_create_timer(5.0 / FPS);
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 
 	al_start_timer(timer);
@@ -151,45 +156,56 @@ int AllegroSnake(void)
 
 		else if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
-			if (snake.GetSize() < 5) {
-				pos_y -= keys[UP] * 10;
-				pos_y += keys[DOWN] * 10;
-				pos_x -= keys[LEFT] * 10;
-				pos_x += keys[RIGHT] * 10;
-			}
+			pos_y -= keys[UP] * 10;
+			pos_y += keys[DOWN] * 10;
+			pos_x -= keys[LEFT] * 10;
+			pos_x += keys[RIGHT] * 10;
+
+			al_clear_to_color(al_map_rgb(0, 0, 0)); //clear
 
 			//refresh the positions
 			for (int i = snake.GetSize() - 1;
 					i >= 0;
 					--i)
 			{
-				if (snake.vSnake.at(i).GetDirection()=='U'){
-					snake.vSnake.at(i).SetY1(pos_y + i * 30);
-					snake.vSnake.at(i).SetX1(pos_x);
-				}else if (snake.vSnake.at(i).GetDirection()=='D'){
-					snake.vSnake.at(i).SetY1(pos_y - i * 30);
-					snake.vSnake.at(i).SetX1(pos_x);
-				}else if (snake.vSnake.at(i).GetDirection()=='L'){
-					snake.vSnake.at(i).SetY1(pos_y);
-					snake.vSnake.at(i).SetX1(pos_x + i * 30);
-				}else if (snake.vSnake.at(i).GetDirection()=='R'){
-					snake.vSnake.at(i).SetY1(pos_y);
-					snake.vSnake.at(i).SetX1(pos_x - i * 30);
+				if (i == 0) {
+
+					if (snake.vSnake.at(i).GetDirection()=='U'){
+						snake.vSnake.at(i).SetY1(pos_y + i * 30);
+						snake.vSnake.at(i).SetX1(pos_x);
+					}else if (snake.vSnake.at(i).GetDirection()=='D'){
+						snake.vSnake.at(i).SetY1(pos_y - i * 30);
+						snake.vSnake.at(i).SetX1(pos_x);
+					}else if (snake.vSnake.at(i).GetDirection()=='L'){
+						snake.vSnake.at(i).SetY1(pos_y);
+						snake.vSnake.at(i).SetX1(pos_x + i * 30);
+					}else if (snake.vSnake.at(i).GetDirection()=='R'){
+						snake.vSnake.at(i).SetY1(pos_y);
+						snake.vSnake.at(i).SetX1(pos_x - i * 30);
+					}
+
+					//draw the snake beginning
+					al_draw_filled_rectangle(snake.vSnake.at(i).GetX1(),
+							snake.vSnake.at(i).GetY1() ,
+							snake.vSnake.at(i).GetX1() + snake.vSnake.at(i).GetSize(),
+							snake.vSnake.at(i).GetY1() + snake.vSnake.at(i).GetSize(),
+							al_map_rgb(255, 50, 0));
+
 				}
-			}
+				else
+				{
+					snake.vSnake.at(i).SetY1(snake.vSnake.at(i-1).GetY1());
+					snake.vSnake.at(i).SetX1(snake.vSnake.at(i-1).GetX1());
 
-			al_clear_to_color(al_map_rgb(0, 0, 0)); //clear
+					//draw the snake beginning
+					al_draw_filled_rectangle(snake.vSnake.at(i).GetX1(),
+							snake.vSnake.at(i).GetY1() ,
+							snake.vSnake.at(i).GetX1() + snake.vSnake.at(i).GetSize(),
+							snake.vSnake.at(i).GetY1() + snake.vSnake.at(i).GetSize(),
+							al_map_rgb(255, 255, 0));
 
-			//draw the snake beginning by the end
-			for (int i = snake.GetSize() - 1;
-					i >= 0;
-					--i)
-			{
-				al_draw_filled_rectangle(snake.vSnake.at(i).GetX1(),
-						snake.vSnake.at(i).GetY1() ,
-						snake.vSnake.at(i).GetX1() + snake.vSnake.at(i).GetSize(),
-						snake.vSnake.at(i).GetY1() + snake.vSnake.at(i).GetSize(),
-						al_map_rgb(255, 255, 0));
+				}
+
 
 				if (i > 0) snake.vSnake.at(i).SetDirection(snake.vSnake.at(i - 1).GetDirection());
 
@@ -273,7 +289,6 @@ int AllegroSnake(void)
 				food.GetY1() + food.GetSize() , al_map_rgb(0, 0, 255));
 
 		al_flip_display();
-		//al_clear_to_color(al_map_rgb(0, 0, 0)); //clear
 	}
 
 	al_destroy_event_queue(event_queue);
